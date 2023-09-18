@@ -165,6 +165,7 @@
             this.DeleteTeacherButton.TabIndex = 9;
             this.DeleteTeacherButton.Text = "Supprimer Prof";
             this.DeleteTeacherButton.UseVisualStyleBackColor = true;
+            this.DeleteTeacherButton.Click += new System.EventHandler(this.DeleteTeacherButton_Click);
             // 
             // ModifyTeacherButton
             // 
@@ -174,6 +175,7 @@
             this.ModifyTeacherButton.TabIndex = 8;
             this.ModifyTeacherButton.Text = "Modifier Prof";
             this.ModifyTeacherButton.UseVisualStyleBackColor = true;
+            this.ModifyTeacherButton.Click += new System.EventHandler(this.ModifyTeacherButton_Click);
             // 
             // IdInfoTeacherLabel
             // 
@@ -313,6 +315,7 @@
             this.DeleteRoomButton.TabIndex = 9;
             this.DeleteRoomButton.Text = "Supprimer Salle";
             this.DeleteRoomButton.UseVisualStyleBackColor = true;
+            this.DeleteRoomButton.Click += new System.EventHandler(this.DeleteRoomButton_Click);
             // 
             // ModifyRoomButton
             // 
@@ -322,6 +325,7 @@
             this.ModifyRoomButton.TabIndex = 8;
             this.ModifyRoomButton.Text = "Modifier Salle";
             this.ModifyRoomButton.UseVisualStyleBackColor = true;
+            this.ModifyRoomButton.Click += new System.EventHandler(this.ModifyRoomButton_Click);
             // 
             // IdInfoRoomLabel
             // 
@@ -451,6 +455,7 @@
             this.DeleteClassButton.TabIndex = 9;
             this.DeleteClassButton.Text = "Supprimer Cours";
             this.DeleteClassButton.UseVisualStyleBackColor = true;
+            this.DeleteClassButton.Click += new System.EventHandler(this.DeleteClassButton_Click);
             // 
             // ModifyClassButton
             // 
@@ -460,6 +465,7 @@
             this.ModifyClassButton.TabIndex = 8;
             this.ModifyClassButton.Text = "Modifier Cours";
             this.ModifyClassButton.UseVisualStyleBackColor = true;
+            this.ModifyClassButton.Click += new System.EventHandler(this.ModifyClassButton_Click);
             // 
             // IdInfoClassLabel
             // 
@@ -655,6 +661,7 @@
             this.DeleteScheduleButton.TabIndex = 9;
             this.DeleteScheduleButton.Text = "Supprimer Horaire";
             this.DeleteScheduleButton.UseVisualStyleBackColor = true;
+            this.DeleteScheduleButton.Click += new System.EventHandler(this.DeleteScheduleButton_Click);
             // 
             // ModifyScheduleButton
             // 
@@ -664,6 +671,7 @@
             this.ModifyScheduleButton.TabIndex = 8;
             this.ModifyScheduleButton.Text = "Modifier Horaire";
             this.ModifyScheduleButton.UseVisualStyleBackColor = true;
+            this.ModifyScheduleButton.Click += new System.EventHandler(this.ModifyScheduleButton_Click);
             // 
             // IdInfoScheduleLabel
             // 

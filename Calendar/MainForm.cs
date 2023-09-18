@@ -1,5 +1,6 @@
 
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Math.EC;
 using System.Data;
 /**
 * Project      : Calendar
@@ -70,13 +71,13 @@ namespace Calendar
         /// <param name="e">The event that was triggered</param>
         private void TeacherDataGridView_Click(object sender, EventArgs e)
         {
-            if (TeacherDataGridView.CurrentRow != null)
+            DataGridViewRow? teacher = TeacherDataGridView.CurrentRow;
+            if (teacher != null)
             {
-                DataGridViewCellCollection teacher = TeacherDataGridView.CurrentRow.Cells;
-                IdInfoTeacherLabel.Text = teacher[0].Value.ToString();
-                NameTeacherTextBox.Text = teacher[1].Value.ToString();
-                EmailTeacherTextBox.Text = teacher[2].Value.ToString();
-                PhoneTeacherTextBox.Text = teacher[3].Value.ToString();
+                IdInfoTeacherLabel.Text = teacher.Cells[0].Value.ToString();
+                NameTeacherTextBox.Text = teacher.Cells[1].Value.ToString();
+                EmailTeacherTextBox.Text = teacher.Cells[2].Value.ToString();
+                PhoneTeacherTextBox.Text = teacher.Cells[3].Value.ToString();
             }
         }
 
@@ -88,12 +89,12 @@ namespace Calendar
         /// <param name="e">The event that was triggered</param>
         private void RoomDataGridView_Click(object sender, EventArgs e)
         {
-            if (RoomDataGridView.CurrentRow != null)
+            DataGridViewRow? room = RoomDataGridView.CurrentRow;
+            if (room != null)
             {
-                DataGridViewCellCollection room = RoomDataGridView.CurrentRow.Cells;
-                IdInfoRoomLabel.Text = room[0].Value.ToString();
-                NameRoomTextBox.Text = room[1].Value.ToString();
-                CapacityRoomNumericUpDown.Value = (int)room[2].Value;
+                IdInfoRoomLabel.Text = room.Cells[0].Value.ToString();
+                NameRoomTextBox.Text = room.Cells[1].Value.ToString();
+                CapacityRoomNumericUpDown.Value = (int)room.Cells[2].Value;
             }
         }
 
@@ -105,12 +106,12 @@ namespace Calendar
         /// <param name="e">The event that was triggered</param>
         private void ClassDataGridView_Click(object sender, EventArgs e)
         {
-            if (ClassDataGridView.CurrentRow != null)
+            DataGridViewRow? myClass = ClassDataGridView.CurrentRow;
+            if (myClass != null)
             {
-                DataGridViewCellCollection myClass = ClassDataGridView.CurrentRow.Cells;
-                IdInfoClassLabel.Text = myClass[0].Value.ToString();
-                NameClassTextBox.Text = myClass[1].Value.ToString();
-                DescriptionClassTextBox.Text = myClass[2].Value.ToString();
+                IdInfoClassLabel.Text = myClass.Cells[0].Value.ToString();
+                NameClassTextBox.Text = myClass.Cells[1].Value.ToString();
+                DescriptionClassTextBox.Text = myClass.Cells[2].Value.ToString();
             }
         }
 
@@ -122,12 +123,12 @@ namespace Calendar
         /// <param name="e">The event that was triggered</param>
         private void ScheduleDataGridView_Click(object sender, EventArgs e)
         {
-            if (ScheduleDataGridView.CurrentRow != null)
+            DataGridViewRow? schedule = ScheduleDataGridView.CurrentRow;
+            if (schedule != null)
             {
-                DataGridViewCellCollection schedule = ScheduleDataGridView.CurrentRow.Cells;
-                IdInfoScheduleLabel.Text = schedule[0].Value.ToString();
-                StartScheduleDateTimePicker.Value = DateTime.Parse(schedule[2].Value.ToString());
-                EndScheduleDateTimePicker.Value = DateTime.Parse(schedule[3].Value.ToString());
+                IdInfoScheduleLabel.Text = schedule.Cells[0].Value.ToString();
+                StartScheduleDateTimePicker.Value = DateTime.Parse(schedule.Cells[2].Value.ToString());
+                EndScheduleDateTimePicker.Value = DateTime.Parse(schedule.Cells[3].Value.ToString());
             }
         }
 
@@ -149,6 +150,14 @@ namespace Calendar
             {
                 dbManager.AddData("Teachers", new string[3] { NameTeacherTextBox.Text, EmailTeacherTextBox.Text, PhoneTeacherTextBox.Text });
                 UpdateTeachers();
+                MessageBox.Show("Professeur ajouté avec succès!");
+                NameTeacherTextBox.Text = "";
+                EmailTeacherTextBox.Text = "";
+                PhoneTeacherTextBox.Text = "";
+            }
+            else
+            {
+                MessageBox.Show("Veuillez s'il-vous-plaît remplir tout les champs");
             }
         }
 
@@ -164,6 +173,13 @@ namespace Calendar
             {
                 dbManager.AddData("Rooms", new string[2] { NameRoomTextBox.Text, Convert.ToString(CapacityRoomNumericUpDown.Value) });
                 UpdateRooms();
+                MessageBox.Show("Salle ajoutée avec succès!");
+                NameRoomTextBox.Text = "";
+                CapacityRoomNumericUpDown.Value = 0;
+            }
+            else
+            {
+                MessageBox.Show("Veuillez s'il-vous-plaît remplir tout les champs");
             }
         }
 
@@ -181,6 +197,13 @@ namespace Calendar
                 DataRow teacher = curr.Row;
                 dbManager.AddData("Classes", new string[3] { NameClassTextBox.Text, DescriptionClassTextBox.Text, Convert.ToString(teacher["ID"]) });
                 UpdateClasses();
+                MessageBox.Show("Cours ajouté avec succès!");
+                NameClassTextBox.Text = "";
+                DescriptionClassTextBox.Text = "";
+            }
+            else
+            {
+                MessageBox.Show("Veuillez s'il-vous-plaît remplir tout les champs");
             }
         }
 
@@ -202,6 +225,198 @@ namespace Calendar
                 string end = EndScheduleDateTimePicker.Value.TimeOfDay.ToString();
                 dbManager.AddData("Schedules", new string[5] { WeekDayScheduleComboBox.SelectedItem.ToString(), start, end, Convert.ToString(room["ID"]), Convert.ToString(myClass["id"]) });
                 UpdateSchedules();
+                MessageBox.Show("Horaire ajouté avec succès!");
+                StartScheduleDateTimePicker.Value = DateTime.Parse("08:00:00");
+                EndScheduleDateTimePicker.Value = DateTime.Parse("08:00:00");
+                WeekDayScheduleComboBox.SelectedIndex = -1;
+            }
+            else
+            {
+                MessageBox.Show("Veuillez s'il-vous-plaît remplir tout les champs");
+            }
+        }
+
+
+        // #############################
+        // Clicking on delete buttons
+        // #############################
+
+
+        /// <summary>
+        /// When clicking the DeleteTeacherButton control
+        /// Delete the selected teacher if they have no class to give
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event that was triggered</param>
+        private void DeleteTeacherButton_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow? teacher = TeacherDataGridView.CurrentRow;
+            if (teacher != null && dbManager.CheckIfFree("Teachers", "Classes", teacher.Cells[0].Value.ToString()))
+            {
+                dbManager.DeleteData("Teachers", teacher.Cells[0].Value.ToString());
+                UpdateTeachers();
+                MessageBox.Show("Professeur supprimé avec succès!");
+            }
+            else
+            {
+                MessageBox.Show(teacher != null ? "Veuillez s'il-vous-plaît disassocier le(s) cours que le professeur donne du professeur avant de le supprimer" : "Il est impossible de supprimer un professeur car aucun n'est séléctionné, vérifiez que la table n'est pas vide");
+            }
+        }
+
+        /// <summary>
+        /// When clicking the DeleteRoomButton control
+        /// Delete the selected room if it is not used during the week
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event that was triggered</param>
+        private void DeleteRoomButton_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow? room = RoomDataGridView.CurrentRow;
+            if (room != null && dbManager.CheckIfFree("Rooms", "Schedules", room.Cells[0].Value.ToString()))
+            {
+                dbManager.DeleteData("Rooms", room.Cells[0].Value.ToString());
+                UpdateRooms();
+                MessageBox.Show("Salle supprimée avec succès!");
+            }
+            else
+            {
+                MessageBox.Show(room != null ? "Veuillez s'il-vous-plaît disassocier le(s) horaire(s) où cette salle est utilisée" : "Il est impossible de supprimer une salle car aucune n'est séléctionnée, vérifiez que la table n'est pas vide");
+            }
+        }
+
+        /// <summary>
+        /// When clicking the DeleteClassButton control
+        /// Delete the selected class if it is not given during the week
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event that was triggered</param>
+        private void DeleteClassButton_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow? myClass = ClassDataGridView.CurrentRow;
+            if (myClass != null && dbManager.CheckIfFree("Classes", "Schedules", myClass.Cells[0].Value.ToString())) {
+                dbManager.DeleteData("Classes", myClass.Cells[0].Value.ToString());
+                UpdateClasses();
+                MessageBox.Show("Cours supprimé avec succès!");
+            }
+            else
+            {
+                MessageBox.Show(myClass != null ? "Veuillez s'il-vous-plaît disassocier le(s) horaire(s) où le cours a lieu" : "Il est impossible de supprimer un cours car aucun n'est séléctionné, vérifiez que la table n'est pas vide");
+            }
+        }
+
+        /// <summary>
+        /// When clicking the DeleteScheduleButton control
+        /// Delete the selected schedule
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event that was triggered</param>
+        private void DeleteScheduleButton_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow? schedule = ScheduleDataGridView.CurrentRow;
+            if (schedule != null)
+            {
+                dbManager.DeleteData("Schedules", schedule.Cells[0].Value.ToString());
+                UpdateSchedules();
+                MessageBox.Show("Horaire supprimé avec succès!");
+            }
+            else
+            {
+                MessageBox.Show("Il est impossible de supprimer un horaire car aucun n'est séléctionné, vérifiez que la table n'est pas vide");
+            }
+        }
+
+
+        // #############################
+        // Clicking on modify button
+        // #############################
+
+
+        /// <summary>
+        /// When clicking the ModifyTeacherButton control
+        /// Verify if we can modify the selected teacher and modify them if we can
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event that was triggered</param>
+        private void ModifyTeacherButton_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow? teacher = TeacherDataGridView.CurrentRow;
+            if (teacher != null && NameTeacherTextBox.Text != "" && EmailTeacherTextBox.Text != "" && PhoneTeacherTextBox.Text != "")
+            {
+                string[] data = new string[3];
+                data[0] = NameTeacherTextBox.Text;
+                data[1] = EmailTeacherTextBox.Text;
+                data[2] = PhoneTeacherTextBox.Text;
+                dbManager.ModifyData("Teachers", teacher.Cells[0].Value.ToString(), data);
+                UpdateTeachers();
+                MessageBox.Show("Professeur changé avec succès");
+            }
+            else
+            {
+                MessageBox.Show("Veuillez s'il-vous-plaît remplir tout les champs et choisir un professeur, vérifiez que la table n'est pas vide");
+            }
+        }
+
+        /// <summary>
+        /// When clicking the ModifyRoomButton control
+        /// Verify if we can modify the selected room and modify it if we can
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event that was triggered</param>
+        private void ModifyRoomButton_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow? room = RoomDataGridView.CurrentRow;
+            if (room != null && NameRoomTextBox.Text != "" && CapacityRoomNumericUpDown.Value != 0)
+            {
+                string[] data = new string[2];
+                data[0] = NameRoomTextBox.Text;
+                data[1] = Convert.ToString(CapacityRoomNumericUpDown.Value);
+                dbManager.ModifyData("Rooms", room.Cells[0].Value.ToString(), data);
+                UpdateRooms();
+                MessageBox.Show("Salle modifiée avec succès");
+            }
+            else
+            {
+                MessageBox.Show("Veuillez s'il-vous-plaît remplir tout les champs et choisir une salle, vérifiez que la table n'est pas vide");
+            }
+        }
+
+        /// <summary>
+        /// When clicking the ModifyClassButton control
+        /// Verify if we can modify a selected class and modify it if we can
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event that was triggered</param>
+        private void ModifyClassButton_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow? myClass = ClassDataGridView.CurrentRow;
+            if (myClass != null && NameClassTextBox.Text != "" && DescriptionClassTextBox.Text != "" && TeacherClassComboBox.SelectedIndex != -1)
+            {
+
+                MessageBox.Show("Cours modifié avec succès");
+            }
+            else
+            {
+                MessageBox.Show("Veuillez s'il-vous-plaît remplir tout les champs et choisir un cours, vérifiez que la table n'est pas vide");
+            }
+        }
+
+        /// <summary>
+        /// When clicking the ModifyScheduleButton control
+        /// Verify if we can modify a selected schedule and modify it if we can
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event that was triggered</param>
+        private void ModifyScheduleButton_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow? schedule = ClassDataGridView.CurrentRow;
+            if (schedule != null && RoomScheduleComboBox.SelectedIndex != -1 && ClassScheduleComboBox.SelectedIndex != -1)
+            {
+
+                MessageBox.Show("horaire modifié avec succès");
+            }
+            else
+            {
+                MessageBox.Show("Veuillez s'il-vous-plaît remplir tout les champs et choisir un horaire, vérifiez que la table n'est pas vide");
             }
         }
 
@@ -260,6 +475,5 @@ namespace Calendar
             adapter.Fill(table);
             ScheduleDataGridView.DataSource = table;
         }
-
     }
 }
