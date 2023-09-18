@@ -725,6 +725,7 @@
             this.ScheduleDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.ScheduleDataGridView.Size = new System.Drawing.Size(479, 324);
             this.ScheduleDataGridView.TabIndex = 4;
+            this.ScheduleDataGridView.Click += new System.EventHandler(this.ScheduleDataGridView_Click);
             // 
             // MainForm
             // 

@@ -18,6 +18,11 @@ namespace Calendar
     /// </summary>
     internal class DbManager
     {
+        // #############################
+        // The global variables of the class
+        // #############################
+
+
         /// <summary>
         /// The connection to the database
         /// </summary>
@@ -32,6 +37,11 @@ namespace Calendar
         /// The list of the function for the insert statement of each table
         /// </summary>
         Dictionary<string, Func<string[], string>> tableDataInsert;
+
+
+        // #############################
+        // The start of the object
+        // #############################
 
 
         /// <summary>
@@ -60,6 +70,12 @@ namespace Calendar
             tableDataInsert.Add("Classes", (string[] data) => "('" + data[0] + "','" + data[1] + "'," + data[2] + ");");
             tableDataInsert.Add("Schedules", (string[] data) => "('" + data[0] + "','" + data[1] + "','" + data[2] + "'," + data[3] + "," + data[4] + ");");
         }
+
+
+        // #############################
+        // The execution of the commands
+        // #############################
+
 
         /// <summary>
         /// Get from the database the objects of a given table

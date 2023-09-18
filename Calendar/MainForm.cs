@@ -15,10 +15,21 @@ namespace Calendar
     /// </summary>
     public partial class MainForm : Form
     {
+        // #############################
+        // The global variables of the class
+        // #############################
+
+
         /// <summary>
         /// The manager of the database
         /// </summary>
         DbManager dbManager;
+
+
+        // #############################
+        // The start of the object
+        // #############################
+
 
         /// <summary>
         /// The constructor of the class, initialize all components
@@ -45,55 +56,86 @@ namespace Calendar
             UpdateSchedules();
         }
 
+
+        // #############################
+        // Clicking on the DataGridViews
+        // #############################
+
+
         /// <summary>
-        /// Update the infos in the controls of the form about the teachers
+        /// When clicking the TeacherDataGridView control
+        /// Modify the infos of the groupbox to the infos of the item that we selected
         /// </summary>
-        private void UpdateTeachers()
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event that was triggered</param>
+        private void TeacherDataGridView_Click(object sender, EventArgs e)
         {
-            MySqlDataAdapter adapter = dbManager.GetListObject("Teachers", "idTeacher as 'ID', name as 'nom', email, phoneNbr as 'Téléphone'");
-            DataTable table = new DataTable();
-            adapter.Fill(table);
-            TeacherDataGridView.DataSource = table;
-            TeacherClassComboBox.DataSource = table;
-            TeacherClassComboBox.DisplayMember = "nom";
+            if (TeacherDataGridView.CurrentRow != null)
+            {
+                DataGridViewCellCollection teacher = TeacherDataGridView.CurrentRow.Cells;
+                IdInfoTeacherLabel.Text = teacher[0].Value.ToString();
+                NameTeacherTextBox.Text = teacher[1].Value.ToString();
+                EmailTeacherTextBox.Text = teacher[2].Value.ToString();
+                PhoneTeacherTextBox.Text = teacher[3].Value.ToString();
+            }
         }
 
         /// <summary>
-        /// Update the infos in the controls of the form about the rooms
+        /// When clicking the RoomDataGridView control
+        /// Modify the infos of the groupbox to the infos of the item that we selected
         /// </summary>
-        private void UpdateRooms()
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event that was triggered</param>
+        private void RoomDataGridView_Click(object sender, EventArgs e)
         {
-            MySqlDataAdapter adapter = dbManager.GetListObject("Rooms", "idRoom as 'ID', name as 'nom', capacity as 'capacité'");
-            DataTable table = new DataTable();
-            adapter.Fill(table);
-            RoomDataGridView.DataSource = table;
-            RoomScheduleComboBox.DataSource = table;
-            RoomScheduleComboBox.DisplayMember = "nom";
+            if (RoomDataGridView.CurrentRow != null)
+            {
+                DataGridViewCellCollection room = RoomDataGridView.CurrentRow.Cells;
+                IdInfoRoomLabel.Text = room[0].Value.ToString();
+                NameRoomTextBox.Text = room[1].Value.ToString();
+                CapacityRoomNumericUpDown.Value = (int)room[2].Value;
+            }
         }
 
         /// <summary>
-        /// Update the infos in the controls of the form about the classes
+        /// When clicking the ClassDataGridView control
+        /// Modify the infos of the groupbox to the infos of the item that we selected
         /// </summary>
-        private void UpdateClasses()
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event that was triggered</param>
+        private void ClassDataGridView_Click(object sender, EventArgs e)
         {
-            MySqlDataAdapter adapter = dbManager.GetListObject("Classes, Teachers", "idClass as 'ID', Classes.name as 'nom', description, Teachers.name as 'professeur'", "WHERE Classes.idTeacher = Teachers.idTeacher");
-            DataTable table = new DataTable();
-            adapter.Fill(table);
-            ClassDataGridView.DataSource = table;
-            ClassScheduleComboBox.DataSource = table;
-            ClassScheduleComboBox.DisplayMember = "nom";
+            if (ClassDataGridView.CurrentRow != null)
+            {
+                DataGridViewCellCollection myClass = ClassDataGridView.CurrentRow.Cells;
+                IdInfoClassLabel.Text = myClass[0].Value.ToString();
+                NameClassTextBox.Text = myClass[1].Value.ToString();
+                DescriptionClassTextBox.Text = myClass[2].Value.ToString();
+            }
         }
 
         /// <summary>
-        /// Update the infos in the controls of the form about the schedules
+        /// When clicking the ScheduleDataGridView control
+        /// Modify the infos of the groupbox to the infos of the item that we selected
         /// </summary>
-        private void UpdateSchedules()
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event that was triggered</param>
+        private void ScheduleDataGridView_Click(object sender, EventArgs e)
         {
-            MySqlDataAdapter adapter = dbManager.GetListObject("Schedules, Classes, Rooms", "idSchedule as 'ID', weekDay as 'jour', startHour as 'début', endHour as 'fin', Rooms.name as 'salle', Classes.name as 'cours'", "WHERE Schedules.idClass = Classes.idClass AND Schedules.idRoom = Rooms.idRoom");
-            DataTable table = new DataTable();
-            adapter.Fill(table);
-            ScheduleDataGridView.DataSource = table;
+            if (ScheduleDataGridView.CurrentRow != null)
+            {
+                DataGridViewCellCollection schedule = ScheduleDataGridView.CurrentRow.Cells;
+                IdInfoScheduleLabel.Text = schedule[0].Value.ToString();
+                StartScheduleDateTimePicker.Value = DateTime.Parse(schedule[2].Value.ToString());
+                EndScheduleDateTimePicker.Value = DateTime.Parse(schedule[3].Value.ToString());
+            }
         }
+
+
+        // #############################
+        // Clicking on add buttons
+        // #############################
+
 
         /// <summary>
         /// When clicking the AddTeacherButton control
@@ -163,56 +205,61 @@ namespace Calendar
             }
         }
 
+
+        // #############################
+        // Updates variables
+        // #############################
+
+
         /// <summary>
-        /// When clicking the TeacherDataGridView control
-        /// Modify the infos of the groupbox to the infos of the item that we selected
+        /// Update the infos in the controls of the form about the teachers
         /// </summary>
-        /// <param name="sender">The sender of the event</param>
-        /// <param name="e">The event that was triggered</param>
-        private void TeacherDataGridView_Click(object sender, EventArgs e)
+        private void UpdateTeachers()
         {
-            if (TeacherDataGridView.CurrentRow != null)
-            {
-                DataGridViewCellCollection teacher = TeacherDataGridView.CurrentRow.Cells;
-                IdInfoTeacherLabel.Text = teacher[0].Value.ToString();
-                NameTeacherTextBox.Text = teacher[1].Value.ToString();
-                EmailTeacherTextBox.Text = teacher[2].Value.ToString();
-                PhoneTeacherTextBox.Text = teacher[3].Value.ToString();
-            }
+            MySqlDataAdapter adapter = dbManager.GetListObject("Teachers", "idTeacher as 'ID', name as 'nom', email, phoneNbr as 'Téléphone'");
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+            TeacherDataGridView.DataSource = table;
+            TeacherClassComboBox.DataSource = table;
+            TeacherClassComboBox.DisplayMember = "nom";
         }
 
         /// <summary>
-        /// When clicking the RoomDataGridView control
-        /// Modify the infos of the groupbox to the infos of the item that we selected
+        /// Update the infos in the controls of the form about the rooms
         /// </summary>
-        /// <param name="sender">The sender of the event</param>
-        /// <param name="e">The event that was triggered</param>
-        private void RoomDataGridView_Click(object sender, EventArgs e)
+        private void UpdateRooms()
         {
-            if (RoomDataGridView.CurrentRow != null)
-            {
-                DataGridViewCellCollection room = RoomDataGridView.CurrentRow.Cells;
-                IdInfoRoomLabel.Text = room[0].Value.ToString();
-                NameRoomTextBox.Text = room[1].Value.ToString();
-                CapacityRoomNumericUpDown.Value = (int)room[2].Value;
-            }
+            MySqlDataAdapter adapter = dbManager.GetListObject("Rooms", "idRoom as 'ID', name as 'nom', capacity as 'capacité'");
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+            RoomDataGridView.DataSource = table;
+            RoomScheduleComboBox.DataSource = table;
+            RoomScheduleComboBox.DisplayMember = "nom";
         }
 
         /// <summary>
-        /// When clicking the ClassDataGridView control
-        /// Modify the infos of the groupbox to the infos of the item that we selected
+        /// Update the infos in the controls of the form about the classes
         /// </summary>
-        /// <param name="sender">The sender of the event</param>
-        /// <param name="e">The event that was triggered</param>
-        private void ClassDataGridView_Click(object sender, EventArgs e)
+        private void UpdateClasses()
         {
-            if (ClassDataGridView.CurrentRow != null)
-            {
-                DataGridViewCellCollection myClass = ClassDataGridView.CurrentRow.Cells;
-                IdInfoClassLabel.Text = myClass[0].Value.ToString();
-                NameClassTextBox.Text = myClass[1].Value.ToString();
-                DescriptionClassTextBox.Text = myClass[2].Value.ToString();
-            }
+            MySqlDataAdapter adapter = dbManager.GetListObject("Classes, Teachers", "idClass as 'ID', Classes.name as 'nom', description, Teachers.name as 'professeur'", "WHERE Classes.idTeacher = Teachers.idTeacher");
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+            ClassDataGridView.DataSource = table;
+            ClassScheduleComboBox.DataSource = table;
+            ClassScheduleComboBox.DisplayMember = "nom";
         }
+
+        /// <summary>
+        /// Update the infos in the controls of the form about the schedules
+        /// </summary>
+        private void UpdateSchedules()
+        {
+            MySqlDataAdapter adapter = dbManager.GetListObject("Schedules, Classes, Rooms", "idSchedule as 'ID', weekDay as 'jour', startHour as 'début', endHour as 'fin', Rooms.name as 'salle', Classes.name as 'cours'", "WHERE Schedules.idClass = Classes.idClass AND Schedules.idRoom = Rooms.idRoom");
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+            ScheduleDataGridView.DataSource = table;
+        }
+
     }
 }
