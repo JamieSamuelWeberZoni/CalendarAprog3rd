@@ -112,6 +112,15 @@ namespace Calendar
                 IdInfoClassLabel.Text = myClass.Cells[0].Value.ToString();
                 NameClassTextBox.Text = myClass.Cells[1].Value.ToString();
                 DescriptionClassTextBox.Text = myClass.Cells[2].Value.ToString();
+
+                ComboBox.ObjectCollection teachers = TeacherClassComboBox.Items;
+                foreach (DataRowView teacher in teachers)
+                {
+                    if (teacher.Row[1].ToString() == myClass.Cells[3].Value.ToString())
+                    {
+                        TeacherClassComboBox.SelectedItem = teacher;
+                    }
+                }
             }
         }
 
@@ -127,8 +136,27 @@ namespace Calendar
             if (schedule != null)
             {
                 IdInfoScheduleLabel.Text = schedule.Cells[0].Value.ToString();
+                WeekDayScheduleComboBox.SelectedItem = schedule.Cells[1].Value.ToString();
                 StartScheduleDateTimePicker.Value = DateTime.Parse(schedule.Cells[2].Value.ToString());
                 EndScheduleDateTimePicker.Value = DateTime.Parse(schedule.Cells[3].Value.ToString());
+            }
+
+            ComboBox.ObjectCollection rooms = RoomScheduleComboBox.Items;
+            foreach (DataRowView room in rooms)
+            {
+                if (room.Row[1].ToString() == schedule.Cells[4].Value.ToString())
+                {
+                    RoomScheduleComboBox.SelectedItem = room;
+                }
+            }
+
+            ComboBox.ObjectCollection classes = ClassScheduleComboBox.Items;
+            foreach (DataRowView myClass in classes)
+            {
+                if (myClass.Row[1].ToString() == schedule.Cells[5].Value.ToString())
+                {
+                    ClassScheduleComboBox.SelectedItem = myClass;
+                }
             }
         }
 
@@ -391,7 +419,13 @@ namespace Calendar
             DataGridViewRow? myClass = ClassDataGridView.CurrentRow;
             if (myClass != null && NameClassTextBox.Text != "" && DescriptionClassTextBox.Text != "" && TeacherClassComboBox.SelectedIndex != -1)
             {
-
+                string[] data = new string[3];
+                data[0] = NameClassTextBox.Text;
+                data[1] = DescriptionClassTextBox.Text;
+                DataRowView teacherId = (DataRowView)TeacherClassComboBox.SelectedValue;
+                data[2] = Convert.ToString(teacherId.Row[0]);
+                dbManager.ModifyData("Classes", myClass.Cells[0].Value.ToString(), data);
+                UpdateClasses();
                 MessageBox.Show("Cours modifié avec succès");
             }
             else
@@ -408,10 +442,19 @@ namespace Calendar
         /// <param name="e">The event that was triggered</param>
         private void ModifyScheduleButton_Click(object sender, EventArgs e)
         {
-            DataGridViewRow? schedule = ClassDataGridView.CurrentRow;
-            if (schedule != null && RoomScheduleComboBox.SelectedIndex != -1 && ClassScheduleComboBox.SelectedIndex != -1)
+            DataGridViewRow? schedule = ScheduleDataGridView.CurrentRow;
+            if (schedule != null && RoomScheduleComboBox.SelectedIndex != -1 && ClassScheduleComboBox.SelectedIndex != -1 && WeekDayScheduleComboBox.SelectedIndex != -1)
             {
-
+                string[] data = new string[5];
+                data[0] = WeekDayScheduleComboBox.SelectedItem.ToString();
+                data[1] = StartScheduleDateTimePicker.Value.TimeOfDay.ToString();
+                data[2] = EndScheduleDateTimePicker.Value.TimeOfDay.ToString();
+                DataRowView roomId = (DataRowView)RoomScheduleComboBox.SelectedValue;
+                DataRowView classId = (DataRowView)ClassScheduleComboBox.SelectedValue;
+                data[3] = Convert.ToString(roomId.Row[0]);
+                data[4] = Convert.ToString(classId.Row[0]);
+                dbManager.ModifyData("Schedules", schedule.Cells[0].Value.ToString(), data);
+                UpdateSchedules();
                 MessageBox.Show("horaire modifié avec succès");
             }
             else

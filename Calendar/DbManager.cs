@@ -166,7 +166,7 @@ namespace Calendar
         /// <param name="data">The new data of the item</param>
         public void ModifyData(string table, string id, string[] data)
         {
-            string query = "UPDATE " + table + "SET " + tableDataModify[table](data) + ";";
+            string query = "UPDATE " + table + " SET " + tableDataModify[table](data) + " WHERE " + tableIdName[table] + " = " + id + ";";
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
         }
