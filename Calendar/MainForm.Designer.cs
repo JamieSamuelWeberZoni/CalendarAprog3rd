@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.MainTabControl = new System.Windows.Forms.TabControl();
             this.TeacherPage = new System.Windows.Forms.TabPage();
             this.TeacherGroupBox = new System.Windows.Forms.GroupBox();
@@ -87,6 +88,8 @@
             this.WeekDayScheduleLabel = new System.Windows.Forms.Label();
             this.IdScheduleLabel = new System.Windows.Forms.Label();
             this.ScheduleDataGridView = new System.Windows.Forms.DataGridView();
+            this.CalendarPage = new System.Windows.Forms.TabPage();
+            this.CalendarDataGridView = new System.Windows.Forms.DataGridView();
             this.MainTabControl.SuspendLayout();
             this.TeacherPage.SuspendLayout();
             this.TeacherGroupBox.SuspendLayout();
@@ -101,6 +104,8 @@
             this.SchedulePage.SuspendLayout();
             this.ScheduleGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ScheduleDataGridView)).BeginInit();
+            this.CalendarPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.CalendarDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // MainTabControl
@@ -109,11 +114,13 @@
             this.MainTabControl.Controls.Add(this.RoomPage);
             this.MainTabControl.Controls.Add(this.ClassPage);
             this.MainTabControl.Controls.Add(this.SchedulePage);
+            this.MainTabControl.Controls.Add(this.CalendarPage);
             this.MainTabControl.Location = new System.Drawing.Point(0, 0);
             this.MainTabControl.Name = "MainTabControl";
             this.MainTabControl.SelectedIndex = 0;
             this.MainTabControl.Size = new System.Drawing.Size(790, 363);
             this.MainTabControl.TabIndex = 0;
+            this.MainTabControl.SelectedIndexChanged += new System.EventHandler(this.MainTabControl_SelectedIndexChanged);
             // 
             // TeacherPage
             // 
@@ -735,6 +742,42 @@
             this.ScheduleDataGridView.TabIndex = 4;
             this.ScheduleDataGridView.Click += new System.EventHandler(this.ScheduleDataGridView_Click);
             // 
+            // CalendarPage
+            // 
+            this.CalendarPage.Controls.Add(this.CalendarDataGridView);
+            this.CalendarPage.Location = new System.Drawing.Point(4, 24);
+            this.CalendarPage.Name = "CalendarPage";
+            this.CalendarPage.Padding = new System.Windows.Forms.Padding(3);
+            this.CalendarPage.Size = new System.Drawing.Size(782, 335);
+            this.CalendarPage.TabIndex = 4;
+            this.CalendarPage.Text = "Calendrier";
+            this.CalendarPage.UseVisualStyleBackColor = true;
+            // 
+            // CalendarDataGridView
+            // 
+            this.CalendarDataGridView.AllowUserToAddRows = false;
+            this.CalendarDataGridView.AllowUserToDeleteRows = false;
+            this.CalendarDataGridView.AllowUserToResizeColumns = false;
+            this.CalendarDataGridView.AllowUserToResizeRows = false;
+            this.CalendarDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.CalendarDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.CalendarDataGridView.DefaultCellStyle = dataGridViewCellStyle1;
+            this.CalendarDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CalendarDataGridView.Location = new System.Drawing.Point(3, 3);
+            this.CalendarDataGridView.Name = "CalendarDataGridView";
+            this.CalendarDataGridView.ReadOnly = true;
+            this.CalendarDataGridView.RowHeadersVisible = false;
+            this.CalendarDataGridView.RowTemplate.Height = 80;
+            this.CalendarDataGridView.Size = new System.Drawing.Size(776, 329);
+            this.CalendarDataGridView.TabIndex = 0;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -765,6 +808,8 @@
             this.ScheduleGroupBox.ResumeLayout(false);
             this.ScheduleGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ScheduleDataGridView)).EndInit();
+            this.CalendarPage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.CalendarDataGridView)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -830,5 +875,7 @@
         private ComboBox RoomScheduleComboBox;
         private DateTimePicker StartScheduleDateTimePicker;
         private DateTimePicker EndScheduleDateTimePicker;
+        private TabPage CalendarPage;
+        private DataGridView CalendarDataGridView;
     }
 }

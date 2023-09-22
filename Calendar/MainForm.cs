@@ -2,6 +2,7 @@
 using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Math.EC;
 using System.Data;
+using System.Windows.Forms;
 /**
 * Project      : Calendar
 * File         : MainForm.cs
@@ -55,6 +56,26 @@ namespace Calendar
             UpdateRooms();
             UpdateClasses();
             UpdateSchedules();
+        }
+
+
+        // #############################
+        // Changing tab
+        // #############################
+
+
+        /// <summary>
+        /// When changing tabs
+        /// Verify if we go in the calendar tab and calls UpdateCalendar()
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event that was triggered</param>
+        private void MainTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (MainTabControl.SelectedIndex == 4)
+            {
+                UpdateCalendar();
+            }
         }
 
 
@@ -517,6 +538,49 @@ namespace Calendar
             DataTable table = new DataTable();
             adapter.Fill(table);
             ScheduleDataGridView.DataSource = table;
+        }
+
+        /// <summary>
+        /// update the calendar of the last tab
+        /// </summary>
+        private void UpdateCalendar()
+        {
+            // Variables needed for the transfert of data
+            MySqlDataAdapter[] weekday = new MySqlDataAdapter[5];
+            string[] dayName = new string[5] {"Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"};
+            List<string>[] values = new List<string>[5];
+            DataTable table = new DataTable();
+            int length = 0;
+            // Get data from database
+            for (int i = 0; i < 5; i++)
+            {
+                table.Columns.Add(dayName[i]);
+                weekday[i] = dbManager.GetListObject("Schedules, Classes, Rooms, Teachers", "Classes.name as 'className', CONCAT(Schedules.startHour, '-', Schedules.endHour) as 'hours', Rooms.name as 'roomName', Teachers.name as 'teacherName'", "WHERE Schedules.idClass = Classes.idClass AND Schedules.idRoom = Rooms.idRoom AND Classes.idTeacher = Teachers.idTeacher AND Schedules.weekDay = '" + dayName[i] + "' ORDER BY Schedules.startHour, Schedules.endHour;");
+                DataTable day = new DataTable();
+                weekday[i].Fill(day);
+                values[i] = new List<string>();
+                foreach(DataRow row in day.Rows)
+                {
+                    values[i].Add(row["className"].ToString() + "\r\n" + row["hours"].ToString() + "\r\n" + row["roomName"].ToString() + "\r\n" + row["teacherName"].ToString());
+                }
+                length = values[i].Count > length ? values[i].Count : length;
+            }
+            // Add data to DataTable
+            for (int i = 0; i < length; i++)
+            {
+                DataRow row = table.NewRow();
+                for (int ii = 0; ii < 5; ii++)
+                {
+                    row[dayName[ii]] = values[ii].Count > i ? values[ii][i] : "";
+                }
+                table.Rows.Add(row);
+            }
+            // get DataTable in DataGridView
+            CalendarDataGridView.DataSource = table;
+            foreach (DataGridViewColumn column in CalendarDataGridView.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
         }
     }
 }
